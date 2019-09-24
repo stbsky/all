@@ -12,7 +12,7 @@ import org.zgl.info.mapper.threeDimensional.ThreeDMapper;
 
 @ComponentScan({"org.zgl.info.mapper"})
 @Service("threeDService")
-public class ThreeDService{
+public class ThreeDService {
 
 	@Resource
 	private ThreeDMapper threeDMapper;
