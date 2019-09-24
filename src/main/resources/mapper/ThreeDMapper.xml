@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="org.zgl.info.mapper.threeDimensional.ThreeDMapper">  
+	
+	<select id="getPlcCtrlData_CDD" parameterType="PageData" resultType="PageData">
+		SELECT z.*,
+			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":150,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = '1' THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":105,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = '2' THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":153,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			ELSE ''
+			END controlInfo
+		FROM 
+			(SELECT 
+				t.dev_id devId,
+				t.sdev_type sdevType,
+				t.direction,
+				t.pile_no pileNo,
+				cdd.comm_status commStatus,
+				CASE WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '10110' THEN '0'
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '11001' THEN '1'
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '11010' THEN '2'
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '00110' THEN '3'
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '01001' THEN '4'
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '01010' THEN '5'
+				END cStatus,
+				'PLC' controlType,
+				IFNULL(b.error_code,'0') errorStatus,
+				CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+				ELSE ''
+				END errorDesc
+				FROM tobj_dev_basic t
+				RIGHT JOIN rt_cdd_workstatus cdd
+				ON t.dev_id = cdd.dev_id
+				LEFT JOIN rt_break_down_workstatus b
+				ON cdd.dev_id = b.dev_id) z
+		LEFT JOIN conf_plc_dev p
+		ON z.devId = p.dev_id WHERE 1=1
+		<if test="devId!=null and devId!=''">
+			and z.devId = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPlcCtrlData_CD" parameterType="PageData" resultType="PageData">
+		SELECT z.*,
+			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"车道指示灯单面通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":6,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = '1' THEN CONCAT('{','\"name\":\"车道指示灯单面通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":9,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			ELSE ''
+			END controlInfo
+		FROM 
+			(SELECT 
+				t.dev_id devId,
+				t.sdev_type sdevType,
+				t.direction,
+				t.pile_no pileNo,
+				cd.comm_status commStatus,
+				CASE WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '101' THEN '0'
+				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '110' THEN '1'
+				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '001' THEN '2'
+				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '010' THEN '3'
+				END cStatus,
+				'PLC' controlType,
+				IFNULL(b.error_code,'0') errorStatus,
+				CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+				ELSE ''
+				END errorDesc
+				FROM tobj_dev_basic t
+				RIGHT JOIN rt_cd_workstatus cd
+				ON t.dev_id = cd.dev_id
+				LEFT JOIN rt_break_down_workstatus b
+				ON cd.dev_id = b.dev_id) z
+		LEFT JOIN conf_plc_dev p
+		ON z.devId = p.dev_id where 1=1
+		<if test="devId!=null and devId!=''">
+			and z.devId = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPlcCtrlData_SL" parameterType="PageData" resultType="PageData">
+		SELECT z.*,
+			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":1,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = '1' THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":2,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = '2' THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":4,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			ELSE ''
+			END controlInfo
+		FROM 
+			(SELECT 
+				t.dev_id devId,
+				t.sdev_type sdevType,
+				t.direction,
+				t.pile_no pileNo,
+				sl.comm_status commStatus,
+				CASE WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1100' THEN '0'
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1010' THEN '1'
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1001' THEN '2'
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0100' THEN '3'
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0010' THEN '4'
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0001' THEN '5'
+				END cStatus,
+				'PLC' controlType,
+				IFNULL(b.error_code,'0') errorStatus,
+				CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+				ELSE ''
+				END errorDesc
+				FROM tobj_dev_basic t
+				RIGHT JOIN rt_sl_workstatus sl
+				ON t.dev_id = sl.dev_id
+				LEFT JOIN rt_break_down_workstatus b
+				ON sl.dev_id = b.dev_id) z
+		LEFT JOIN conf_plc_dev p
+		ON z.devId = p.dev_id WHERE 1=1
+		<if test="devId!=null and devId!=''">
+			and z.devId = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPlcCtrlData_JQZM" parameterType="PageData" resultType="PageData">
+		SELECT z.*,
+			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"加强照明\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":1,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"加强照明\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":2,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			ELSE ''
+			END controlInfo
+		FROM 
+			(SELECT 
+				t.dev_id devId,
+				t.sdev_type sdevType,
+				t.direction,
+				t.pile_no pileNo,
+				zm.comm_status commStatus,
+				CASE WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '10' THEN '0'
+				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '11' THEN '1'
+				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '00' THEN '2'
+				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '01' THEN '3'
+				END cStatus,
+				'PLC' controlType,
+				IFNULL(b.error_code,'0') errorStatus,
+				CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+				ELSE ''
+				END errorDesc
+				FROM tobj_dev_basic t
+				RIGHT JOIN rt_zmhl_workstatus zm
+				ON t.dev_id = zm.dev_id
+				LEFT JOIN rt_break_down_workstatus b
+				ON zm.dev_id = b.dev_id) z
+		LEFT JOIN conf_plc_dev p
+		ON z.devId = p.dev_id WHERE 1=1
+		<if test="devId!=null and devId!=''">
+			and z.devId = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPlcCaptData_COVI" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			covi.comm_status commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			CONCAT('{','\"name\":\"covi\",','\"stype\":','\"',t.sdev_type,'\"',',','\"co\":',covi.co_value,',','\"vi\":',covi.vi_value,'}') cDataShow
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_covi_workstatus covi
+		ON t.dev_id = covi.dev_id
+		LEFT JOIN rt_break_down_workstatus b
+		ON covi.dev_id = b.dev_id where 1=1
+		<if test="devId!=null and devId!=''">
+			and t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPlcCaptData_TW" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			tw.comm_status commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			CONCAT('{','\"name\":\"温湿度仪\",','\"stype\":','\"',t.sdev_type,'\"',',','\"windSpeed\":',tw.windSpeed_value,',','\"windDir\":',tw.windDir_value,'}') cDataShow
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_tw_workstatus tw
+		ON t.dev_id = tw.dev_id
+		LEFT JOIN rt_break_down_workstatus b
+		ON tw.dev_id = b.dev_id where 1=1
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPlcCaptData_LA" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			la.comm_status commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			CONCAT('{','\"name\":\"光度仪\",','\"stype\":','\"',t.sdev_type,'\"',',','\"laValue\":',la.la_value,'}') cDataShow
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_la_workstatus la
+		ON t.dev_id = la.dev_id
+		LEFT JOIN rt_break_down_workstatus b
+		ON la.dev_id = b.dev_id where 1=1
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPlcCaptData_CG" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			cg.comm_status commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			CONCAT('{','\"name\":\"超高\",','\"stype\":','\"',t.sdev_type,'\"',',','\"sh_alarm_single\":',cg.sh_alarm_single,',','\"sh_error_single\":',cg.sh_error_single,'}') cDataShow
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_cg_workstatus cg
+		ON t.dev_id = cg.dev_id
+		LEFT JOIN rt_break_down_workstatus b
+		ON cg.dev_id = b.dev_id where 1=1
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getFirealarmCaptData_HAB" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			IFNULL(hab.comm_status,0) commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			CASE WHEN hab.comm_status IS NOT NULL THEN 1
+			WHEN hab.comm_status IS NULL THEN 0
+			ELSE ''
+			END alarmType
+		FROM tobj_dev_basic t
+		LEFT JOIN rt_firealarm_workstatus hab
+		ON t.dev_id = CONCAT(hab.device_id,card_id,component_id)
+		LEFT JOIN rt_break_down_workstatus b
+		ON t.dev_id = b.dev_id WHERE t.sdev_type = 'HAB'
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getFirealarmCaptData_YG" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			IFNULL(hab.comm_status,0) commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			CASE WHEN hab.comm_status IS NOT NULL THEN 1
+			WHEN hab.comm_status IS NULL THEN 0
+			ELSE ''
+			END alarmType
+		FROM tobj_dev_basic t
+		LEFT JOIN rt_firealarm_workstatus hab
+		ON t.dev_id = CONCAT(hab.device_id,card_id,component_id)
+		LEFT JOIN rt_break_down_workstatus b
+		ON t.dev_id = b.dev_id WHERE t.sdev_type = 'YG'
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getFirealarmCaptData_GWGL" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			gwgl.comm_status commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			gwgl.fire_alarm alarmType,
+			gwgl.rt_highest_temp alarmTemp
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_fire_temp_workstatus gwgl
+		ON t.dev_id = gwgl.dev_id
+		LEFT JOIN rt_break_down_workstatus b
+		ON gwgl.dev_id = b.dev_id WHERE 1=1
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getCjCaptData" parameterType="PageData" resultType="PageData">
+		SELECT 
+			cj.fstr_loopgroupid devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			IFNULL(cj.comm_status,0) commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			cj.fint_vh vh,
+			cj.fint_speed vspeed,
+			cj.fint_occupy voccupy
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_loopgroup_workstatus cj
+		ON t.dev_id = LEFT(cj.fstr_loopgroupid,3)
+		LEFT JOIN rt_break_down_workstatus b
+		ON cj.fstr_loopgroupid = b.dev_id where 1=1
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id LIKE concat('%',#{devId},'%')
+		</if>
+	</select>
+	
+	<select id="getSxjCtrlData" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			0 commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			camera.dev_ip devIp,
+			camera.dev_port devPort,
+			camera.dev_user username,
+			camera.dev_pwd password
+		FROM tobj_dev_basic t
+		RIGHT JOIN tobj_dev_camera camera
+		ON t.dev_id = camera.dev_id
+		LEFT JOIN rt_break_down_workstatus b
+		ON camera.dev_id = b.dev_id where 1=1
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getPhoneCaptData" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			phone.comm_status commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			CASE WHEN phone.phone_status = '0003' THEN '0'
+			WHEN phone.phone_status = '0004' THEN '1'
+			ELSE '2'
+			END cStatus
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_phone_workstatus phone
+		ON t.dev_id = phone.phone_num
+		LEFT JOIN rt_break_down_workstatus b
+		ON phone.phone_num = b.dev_id WHERE phone.phone_num IS NOT NULL AND t.dev_id IS NOT NULL
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getBroadcastCtrlData" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			0 commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			IFNULL(board.close_or_not,'1') cStatus
+		FROM tobj_dev_basic t
+		LEFT JOIN handle_boradcast_play board
+		ON t.dev_id = board.play_broadcast
+		LEFT JOIN rt_break_down_workstatus b
+		ON t.dev_id = b.dev_id WHERE t.sdev_type = 'BROADCAST'
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+	
+	<select id="getVmsCtrlData" parameterType="PageData" resultType="PageData">
+		SELECT 
+			t.dev_id devId,
+			t.sdev_type sdevType,
+			t.direction,
+			t.pile_no pileNo,
+			cms.comm_status commStatus,
+			IFNULL(b.error_code,'0') errorStatus,
+			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
+			ELSE ''
+			END errorDesc,
+			cms.dev_word deployWord
+		FROM tobj_dev_basic t
+		RIGHT JOIN rt_cms_workstatus cms
+		ON t.dev_id = cms.dev_id
+		LEFT JOIN rt_break_down_workstatus b
+		ON cms.dev_id = b.dev_id WHERE 1=1
+		<if test="devId!=null and devId!=''">
+			AND t.dev_id = #{devId}
+		</if>
+	</select>
+</mapper>
