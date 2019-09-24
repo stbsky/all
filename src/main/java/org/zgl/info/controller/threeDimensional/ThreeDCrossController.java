@@ -19,7 +19,7 @@ import org.zgl.info.service.threeDimensional.ThreeDService;
  * 三维接口访问
  * @author stb
  */
-@CrossOrigin(origins = {"http://localhost:9999", "null"},allowedHeaders="*",allowCredentials="true",methods = {RequestMethod.POST})
+@CrossOrigin(origins = {"http://localhost:9999","null"},allowedHeaders="*",allowCredentials="true",methods = {RequestMethod.POST})
 @RestController
 @RequestMapping(value="/3D")
 @ComponentScan({"org.zgl.info.service"})
