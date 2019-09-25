@@ -5,9 +5,9 @@
 	
 	<select id="getPlcCtrlData_CDD" parameterType="PageData" resultType="PageData">
 		SELECT z.*,
-			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":150,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
-			WHEN cStatus = '1' THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":105,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
-			WHEN cStatus = '2' THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":153,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			CASE WHEN cStatus = 0 THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":150,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = 1 THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":105,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = 2 THEN CONCAT('{','\"name\":\"车道指示灯双面正向通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":153,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
 			ELSE ''
 			END controlInfo
 		FROM 
@@ -17,12 +17,12 @@
 				t.direction,
 				t.pile_no pileNo,
 				cdd.comm_status commStatus,
-				CASE WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '10110' THEN '0'
-				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '11001' THEN '1'
-				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '11010' THEN '2'
-				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '00110' THEN '3'
-				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '01001' THEN '4'
-				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '01010' THEN '5'
+				CASE WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '10110' THEN 0
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '11001' THEN 1
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '11010' THEN 2
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '00110' THEN 3
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '01001' THEN 4
+				WHEN CONCAT(cdd.sa_position,cdd.frontfork_status,cdd.frontarrow_status,cdd.backfork_status,cdd.backarrow_status) = '01010' THEN 5
 				END cStatus,
 				'PLC' controlType,
 				IFNULL(b.error_code,'0') errorStatus,
@@ -43,8 +43,8 @@
 	
 	<select id="getPlcCtrlData_CD" parameterType="PageData" resultType="PageData">
 		SELECT z.*,
-			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"车道指示灯单面通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":6,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
-			WHEN cStatus = '1' THEN CONCAT('{','\"name\":\"车道指示灯单面通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":9,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			CASE WHEN cStatus = 0 THEN CONCAT('{','\"name\":\"车道指示灯单面通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":6,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = 1 THEN CONCAT('{','\"name\":\"车道指示灯单面通行\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":9,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
 			ELSE ''
 			END controlInfo
 		FROM 
@@ -54,10 +54,10 @@
 				t.direction,
 				t.pile_no pileNo,
 				cd.comm_status commStatus,
-				CASE WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '101' THEN '0'
-				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '110' THEN '1'
-				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '001' THEN '2'
-				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '010' THEN '3'
+				CASE WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '101' THEN 0
+				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '110' THEN 1
+				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '001' THEN 2
+				WHEN CONCAT(cd.sa_position,cd.frontfork_status,cd.frontarrow_status) = '010' THEN 3
 				END cStatus,
 				'PLC' controlType,
 				IFNULL(b.error_code,'0') errorStatus,
@@ -78,9 +78,9 @@
 	
 	<select id="getPlcCtrlData_SL" parameterType="PageData" resultType="PageData">
 		SELECT z.*,
-			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":1,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
-			WHEN cStatus = '1' THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":2,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
-			WHEN cStatus = '2' THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":4,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			CASE WHEN cStatus = 0 THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":1,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = 1 THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":2,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = 2 THEN CONCAT('{','\"name\":\"射流风机\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":4,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
 			ELSE ''
 			END controlInfo
 		FROM 
@@ -90,12 +90,12 @@
 				t.direction,
 				t.pile_no pileNo,
 				sl.comm_status commStatus,
-				CASE WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1100' THEN '0'
-				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1010' THEN '1'
-				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1001' THEN '2'
-				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0100' THEN '3'
-				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0010' THEN '4'
-				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0001' THEN '5'
+				CASE WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1100' THEN 0
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1010' THEN 1
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '1001' THEN 2
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0100' THEN 3
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0010' THEN 4
+				WHEN CONCAT(sl.sa_position,sl.sl_f_on,sl.sl_r_on,sl.sl_off) = '0001' THEN 5
 				END cStatus,
 				'PLC' controlType,
 				IFNULL(b.error_code,'0') errorStatus,
@@ -116,8 +116,8 @@
 	
 	<select id="getPlcCtrlData_JQZM" parameterType="PageData" resultType="PageData">
 		SELECT z.*,
-			CASE WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"加强照明\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":1,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
-			WHEN cStatus = '0' THEN CONCAT('{','\"name\":\"加强照明\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":2,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			CASE WHEN cStatus = 0 THEN CONCAT('{','\"name\":\"加强照明\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":1,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
+			WHEN cStatus = 1 THEN CONCAT('{','\"name\":\"加强照明\",','\"stype\":','\"',z.sdevType,'\"',',','\"controlMsg\":2,','\"sendAddress\":','\"',z.devId,'#',p.plc_id,'\"','}')
 			ELSE ''
 			END controlInfo
 		FROM 
@@ -127,10 +127,10 @@
 				t.direction,
 				t.pile_no pileNo,
 				zm.comm_status commStatus,
-				CASE WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '10' THEN '0'
-				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '11' THEN '1'
-				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '00' THEN '2'
-				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '01' THEN '3'
+				CASE WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '10' THEN 0
+				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '11' THEN 1
+				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '00' THEN 2
+				WHEN CONCAT(zm.sa_position,zm.zmhl_close) = '01' THEN 3
 				END cStatus,
 				'PLC' controlType,
 				IFNULL(b.error_code,'0') errorStatus,
@@ -417,7 +417,7 @@
 			CASE WHEN b.error_code IS NOT NULL THEN b.error_desc
 			ELSE ''
 			END errorDesc,
-			cms.dev_word deployWord
+			CONCAT('{','\"wordInfo\":','\"',cms.dev_word,'\",','\"font\":',cms.dev_font,',','\"fontColor\":',cms.dev_fontColor,',','\"fontSize\":',cms.dev_fontSize,'}') deployWord
 		FROM tobj_dev_basic t
 		RIGHT JOIN rt_cms_workstatus cms
 		ON t.dev_id = cms.dev_id
