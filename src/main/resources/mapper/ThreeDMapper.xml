@@ -426,5 +426,8 @@
 		<if test="devId!=null and devId!=''">
 			AND t.dev_id = #{devId}
 		</if>
+		<if test="sdevType!=null and sdevType!=''">
+			AND t.sdev_type = #{sdevType}
+		</if>
 	</select>
 </mapper>
